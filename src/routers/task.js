@@ -13,7 +13,20 @@ router.post('/tasks', auth, async (req, res) => {
     await task.save()
     res.status(201).send({ task, status: 'Created' })
   } catch (err) {
-    res.status(400).send({ error: err.message })
+    if (err.message.includes('Task validation failed')) {
+      const errorArray = err.message.split('failed: ')[1].split(', ')
+      let errors = []
+      errorArray.forEach((err) => {
+        if (err.includes('`') || err.includes('(')) {
+          errors.push(err.split('Path ')[1].replace(/`/g, "").replace(/[\(|\)]/g, "'"))
+        } else {
+          errors.push(err.split(': ')[1])
+        }
+      })
+      res.status(500).send({ error: errors })
+    } else {
+      res.status(500).send({ error: 'Cannot process request.' })
+    }
   }
 })
 
@@ -91,7 +104,20 @@ router.patch('/tasks/:id', auth, async (req, res) => {
     const savedTask = await task.save()
     res.send({ task: savedTask, status: 'Updated' })
   } catch (err) {
-    res.status(500).send()
+    if (err.message.includes('Task validation failed')) {
+      const errorArray = err.message.split('failed: ')[1].split(', ')
+      let errors = []
+      errorArray.forEach((err) => {
+        if (err.includes('`') || err.includes('(')) {
+          errors.push(err.split('Path ')[1].replace(/`/g, "").replace(/[\(|\)]/g, "'"))
+        } else {
+          errors.push(err.split(': ')[1])
+        }
+      })
+      res.status(500).send({ error: errors })
+    } else {
+      res.status(500).send({ error: 'Cannot process request.' })
+    }
   }
 })
 

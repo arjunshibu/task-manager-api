@@ -6,8 +6,8 @@ const sendWelcome = (email, name, token) => {
     to: email,
     from: 'arjunshibu1999@gmail.com',
     subject: 'Thanks for joining in!',
-    text: `Welcome to our App, ${name}.\n\nPlease verify your account by following this link\nhttps://arjun-task-manager-api.herokuapp.com/users/verify/${token} \nLink is valid only for 1 hour.`,
-    html: `<b>Welcome to our App, ${name}.</b><br><br>Please verify your account by following this link<br>https://arjun-task-manager-api.herokuapp.com/users/verify/${token}<br>Link is valid only for 1 hour.`
+    text: `Welcome to our App, ${name}.\n\nPlease verify your account by following this link\n${process.env.URL}/users/verify/${token} \n\nLink is valid only for 1 hour.`,
+    html: `<b>Welcome to our App, ${name}.</b><br><br>Please verify your account by following this link<br>${process.env.URL}/users/verify/${token}<br><br>Link is valid only for 1 hour.`
   };
   sgMail.send(msg);
 }

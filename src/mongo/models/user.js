@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
 		default: 1,
 		validate(value) {
 			if(value < 0) {
-				throw new Error('Age must not be a negative number.')
+				throw new Error('age must not be a negative number.')
 			}
 		}
 	}, email: {
@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
 		required: true,
 		validate(value) {
 			if(!validator.isEmail(value)) {
-				throw new Error('Email validation failed.')
+				throw new Error('email validation failed.')
 			}
 		}
 	}, password: {
@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema({
 		trim: true,
 		validate(value) {
 			if(value.toLowerCase().includes('password') || value.includes('1234')) {
-				throw new Error('Password validation failed.')
+				throw new Error('password validation failed.')
 			}
 		}
 	}, avatar: {

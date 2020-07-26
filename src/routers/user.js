@@ -16,7 +16,16 @@ router.post('/users/signup', async (req, res) => {
     res.status(201).send({ user, status: 'Check mail to verify your account.' })
   } catch (err) {
     if (err.message.includes('User validation failed')) {
-      res.status(500).send({ error: err.message.split(': ')[2] })
+      const errorArray = err.message.split('failed: ')[1].split(', ')
+      let errors = []
+      errorArray.forEach((err) => {
+        if (err.includes('`') || err.includes('(')) {
+          errors.push(err.split('Path ')[1].replace(/`/g, "").replace(/[\(|\)]/g, "'"))
+        } else {
+          errors.push(err.split(': ')[1])
+        }
+      })
+      res.status(500).send({ error: errors })
     } else if (err.message.includes('duplicate')) {
       res.status(500).send({ error: 'User with email ' + req.body.email + ' already exists.' })
     } else {
@@ -114,7 +123,22 @@ router.patch('/users/me', auth, async (req, res) => {
     const user = await req.user.save()
     res.send({ user, status: 'Updated' })
   } catch (err) {
-    res.status(500).send()
+    if (err.message.includes('User validation failed')) {
+      const errorArray = err.message.split('failed: ')[1].split(', ')
+      let errors = []
+      errorArray.forEach((err) => {
+        if (err.includes('`') || err.includes('(')) {
+          errors.push(err.split('Path ')[1].replace(/`/g, "").replace(/[\(|\)]/g, "'"))
+        } else {
+          errors.push(err.split(': ')[1])
+        }
+      })
+      res.status(500).send({ error: errors })
+    } else if (err.message.includes('duplicate')) {
+      res.status(500).send({ error: 'User with email ' + req.body.email + ' already exists.' })
+    } else {
+      res.status(500).send({ error: 'Cannot process request.' })
+    }
   }
 })
 
