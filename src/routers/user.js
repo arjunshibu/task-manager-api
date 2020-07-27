@@ -5,6 +5,7 @@ const User = require('../mongo/models/user')
 const Task = require('../mongo/models/task')
 const auth = require('../middlewares/auth')
 const email = require('../mails/account')
+
 const router = express.Router({ caseSensitive: true })
 
 router.post('/users/signup', async (req, res) => {
