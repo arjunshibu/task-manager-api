@@ -1,0 +1,23 @@
+# Production build
+
+version: "3.8"
+
+services: 
+  api:
+    build: .
+    ports: 
+      - 80:4000
+    env_file: .env.prod
+    depends_on:
+     - db
+    command: ./docker-entrypoint.sh
+
+  db:
+    image: mongo:4.0-xenial
+    ports:
+      - 27017:27017
+    volumes: 
+      - task-manager-db:/data/db
+
+volumes: 
+  task-manager-db:
